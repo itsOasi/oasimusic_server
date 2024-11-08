@@ -1,13 +1,13 @@
 from flask import Flask, request, send_file
 from flask_cors import CORS
-import app, helper, database, yt_stats, os
+import app, helper, database, yt_stats, os, json
 import datetime
 flask_app = Flask(__name__)
 
 yt = yt_stats.YTstats(app.Data({}).get("yt_api_key"), app.Data({}).get("yt_channel_id"))
 
 # config = helper.json_to_dict("config.json") # settings to be
-CORS(flask_app)
+CORS(flask_app, resources={r"/*": {"origins": "*"}})
 user = app.User({})
 @flask_app.route("/", methods=["GET"]) # loads homepage
 def index():
@@ -104,9 +104,15 @@ def upload_db():
 		return {'message': 'Database uploaded successfully!'}, 200 
 	return {'error': 'Invalid file format'}, 400
 
+@flask_app.route("/refresh_yt_data", methods=["GET"]) # loads homepage
+def refresh_yt_data():
+	yt.api_key = app.Data({}).get("yt_api_key")
+	yt.channel_id = app.Data({}).get("yt_channel_id")
+	return yt.get_channel_video_data()
+
 @flask_app.route("/get_yt_data", methods=["GET"]) # loads homepage
 def get_yt_data():
-	return {"yt_data": yt.get_channel_video_data()}
+	return helper.dict_to_json(yt.video_data)
 
 if __name__ == "__main__":
 	flask_app.run(host="0.0.0.0", port=8000, debug=True)

@@ -6,10 +6,10 @@
 	<title>Home</title>
 </head>
 <body>
-	<p>Youtube Analytics</p>
-	<p id="yt_data"></p>
 	<a href="/view_data">View Database</a>
 	<a href="/logout">Logout</a>
+	<p>Youtube Videos <a id="refresh" href="">Refresh</a></p>
+	<p id="yt_data"></p>
 	<script>
 		let data = new FormData()
 		data.append("id", localStorage.getItem("id"))
@@ -17,9 +17,35 @@
 		fetch("/get_yt_data")
 		.then((response) => response.json())
 		.then((data) => {
-			console.log(data)
-			document.getElementById("yt_data").innerHTML = JSON.stringify(data, null, 2)
+			parseData(data)
 		})
+
+		let refresh = document.getElementById("refresh")
+		refresh.addEventListener("click", (e) => {
+			e.preventDefault()
+			refresh.innerHTML = "Loading..."
+			refresh.disabled = true
+			fetch("/refresh_yt_data")
+			.then((response) => response.json())
+			.then((data) => {
+				parseData(data)
+				refresh.innerHTML = "Refresh"
+				refresh.disabled = false
+			})
+		})
+
+		function parseData(data) {
+			data_el = document.getElementById("yt_data")
+			console.log(data)
+			videos = []
+			for (item in data) {
+				videos.push(data[item])
+			}
+			videos.sort((a, b)=> b.viewCount - a.viewCount)
+			videos.forEach(v => {
+				data_el.innerHTML += `<img src="${v.thumbnails.default.url}"><p>${v.title}</p><p>${v.viewCount}</p><br>`
+			});
+		}
 	</script>
 </body>
 </html>
