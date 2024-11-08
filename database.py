@@ -5,7 +5,7 @@ import sqlite3
 '''
 class Database:
 	def __init__(self, database_name):
-		self.name = database_name
+		self.name = database_name or ":memory:"
 		self.connection = sqlite3.connect(database_name)
 		self.cursor = self.connection.cursor()
 
@@ -71,8 +71,22 @@ class Table:
 		self.results = self.cursor.fetchall()
 		self.filter = ""
 	
-	def delete(self, table_name, condition):
+	def delete(self, condition):
 		self.cursor.execute(f"DELETE FROM {self.table_name} WHERE {condition}")
+		self.connection.commit()
+
+	def update(self, column, value, condition_column=None, condition_value=None):
+		# Construct the base query
+		query = f"UPDATE {self.table_name} SET {column} = ?"
+		params = [value]
+
+		# Add the condition if provided
+		if condition_column and condition_value:
+			query += f" WHERE {condition_column} = ?"
+			params.append(condition_value)
+
+		# Execute the query
+		self.cursor.execute(query, params)
 		self.connection.commit()
 
 	#TODO: def add_columns

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Home</title>
+</head>
+<body>
+	<p>Youtube Analytics</p>
+	<p id="yt_data"></p>
+	<a href="/view_data">View Database</a>
+	<a href="/logout">Logout</a>
+	<script>
+		let data = new FormData()
+		data.append("id", localStorage.getItem("id"))
+		data.append("session", localStorage.getItem("session"))
+		fetch("/get_yt_data")
+		.then((response) => response.json())
+		.then((data) => {
+			console.log(data)
+			document.getElementById("yt_data").innerHTML = JSON.stringify(data, null, 2)
+		})
+	</script>
+</body>
+</html>

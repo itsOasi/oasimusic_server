@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+<body>
+	<p id="data"></p>
+	<a href="/add_data">Add Data</a>
+	<a href="/test_data">Get Data</a>
+	<a id="backup" href="/backup" target="_blank">Backup Database</a>
+	<a href="/upload">Upload Database</a>
+	<a href="/home">Home</a>
+	<script>
+
+		window.onload = function() {
+			let data = new FormData()
+			data.append("id", localStorage.getItem("id"))
+			data.append("session", localStorage.getItem("session"))
+			
+			fetch("/view_data", {
+				method: "POST", 
+				body: data
+			})
+			.then((response) => response.json())
+			.then((data) => {
+				console.log(data)
+				if (data.error) {
+					alert(data.error)
+					window.location.href = "/"
+				}
+			})
+			
+			fetch("/get_all_data", {
+				method: "POST",
+				body: data})
+			.then((response) => response.json())
+			.then((data) => {
+				document.getElementById("data").innerHTML = JSON.stringify(data, null, 2)
+			})
+		}
+	</script>
+</body>
+</html>

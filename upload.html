@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+<body>
+	<form action="/upload" method="post" enctype="multipart/form-data">
+		<label for="file">File:</label>
+		<input type="file" id="file" name="file"><br><br>
+		<input type="submit" value="Upload">
+	</form>
+	<script>
+		let form = document.querySelector("form")
+		form.addEventListener("submit", (e) => {
+			e.preventDefault()
+			let data = new FormData(form)
+			data.append("id", localStorage.getItem("id"))
+			data.append("session", localStorage.getItem("session"))
+			fetch("/upload", {
+				method: "POST",
+				body: data
+			})
+			.then((response) => response.json())
+			.then((data) => {
+				console.log(data)
+				if (data.error) {
+					alert(data.error)
+					window.location.href = "/"
+				} else {
+					alert("File uploaded successfully!")
+				}
+			})
+		})
+	</script>
+</body>
+</html>

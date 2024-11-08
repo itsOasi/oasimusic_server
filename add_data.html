@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+<body>
+	<form action="/add_data" method="post">
+		<label for="key">Key:</label>
+		<input type="text" id="key" name="key"><br><br>
+		<label for="value">Value:</label>
+		<input type="text" id="value" name="value"><br><br>
+		<input type="submit" value="Submit">
+	</form>
+
+	<script>
+		let form = document.querySelector("form")
+		form.addEventListener("submit", (e) => {
+			e.preventDefault()
+			let data = new FormData(form)
+			fetch("/add_data", {
+				method: "POST",
+				body: data
+			})
+			.then((response) => response.json())
+			.then((data) => {
+				console.log(data)
+				if (data.success) {
+					alert("Data added successfully!")
+					window.location.href = "/view_data"
+				}
+			})
+		})
+	</script>
+</body>
+</html>
