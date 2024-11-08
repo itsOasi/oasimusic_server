@@ -106,7 +106,7 @@ def upload_db():
 
 @flask_app.route("/get_yt_data", methods=["GET"]) # loads homepage
 def get_yt_data():
-	return {"yt_data": yt.extract_all()}
+	return {"yt_data": yt.get_channel_video_data()}
 
 if __name__ == "__main__":
 	flask_app.run(host="0.0.0.0", port=8000, debug=True)

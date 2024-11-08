@@ -11,7 +11,7 @@ user_table = db.create_table("User", {"id":"TEXT",
 									  "role":"TEXT", 
 									  "session":"TEXT"})
 data_table = db.create_table("Data", {"id":"TEXT",
-									  "key":"TEXT",
+									  "key":"TEXT UNIQUE",
 									  "value":"TEXT"})
 									  
 ########################################################################################
@@ -93,6 +93,7 @@ class Data:
 			self.key = res[1]
 			self.value = res[2]
 			print("data retrieved")
+			return self.value
 		else:	
 			print("no data found")
 	
