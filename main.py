@@ -115,4 +115,4 @@ def get_yt_data():
 	return helper.dict_to_json(yt.video_data)
 
 if __name__ == "__main__":
-	flask_app.run(host="0.0.0.0", port=8000)
+	flask_app.run(host="0.0.0.0", port=8080)
